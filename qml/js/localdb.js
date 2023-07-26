@@ -3,7 +3,7 @@
 .import QtQuick.LocalStorage 2.0 as LocalStorage
 
 var _db;
-var debug = false;
+var debug = true;
 
 function db(){
     if (!_db){
@@ -13,7 +13,6 @@ function db(){
                      );
         initDb();
     }
-
     return _db;
 }
 
@@ -24,7 +23,7 @@ function initDb() {
         tx.executeSql("create table if not exists settings (key TEXT primary key, value TEXT)");
     }
     );
-    console.log("init Database finished");
+    if (debug) console.log("init Database finished");
 }
 
 

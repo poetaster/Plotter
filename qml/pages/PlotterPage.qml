@@ -28,7 +28,7 @@ Page {
     property string cName
     property int upper
     property int lower
-    property int mode: 0
+    property int mode
 
 
     property bool appActive: Qt.application.active
@@ -263,23 +263,47 @@ Page {
                     id: expressionLeft
                     width: parent.width / 2 - Theme.paddingLarge
                     inputMethodHints: Qt.ImhNoAutoUppercase
-                    label: qsTr("Exp. Left")
+                    label: qsTr("F1()")
                     placeholderText: "6/(5-sqrt(x))"
-                    text: "sin(2*t) + 3*sin(t)"
+                    text:  "sin(2*t) + 3*sin(t)"
                     EnterKey.enabled: text.length > 0
                     EnterKey.iconSource: "image://theme/icon-m-enter-next"
-                    EnterKey.onClicked: expressionRight.focus = true
+                    EnterKey.onClicked:  {
+                        expressionRight.focus = true
+                        func1 = text
+                        DB.setProp('expressionLeft',text)
+                    }
+                    Component.onCompleted: {
+                        text = DB.getProp('expressionLeft')
+                        func1 = text
+                        if (text === "" ) {
+                            text = "sin( 2 * t ) + 3 * sin(t)"
+                            DB.setProp('expressionLeft',text)
+                        }
+                    }
                 }
                 TextField {
                     id: expressionRight
                     width: parent.width  / 2 - Theme.paddingLarge
                     inputMethodHints: Qt.ImhNoAutoUppercase
-                    label: qsTr("Exp. Right")
+                    label: qsTr("F2() parametric")
                     placeholderText: "sqrt(x)"
                     text: "2*sin(3*t)"
                     EnterKey.enabled: text.length > 0
                     EnterKey.iconSource: "image://theme/icon-m-enter-next"
-                    EnterKey.onClicked: modeComboBox.focus = true
+                    EnterKey.onClicked: {
+                        modeComboBox.focus = true
+                        func2 = text
+                        DB.setProp('expressionRight',text)
+                    }
+                    Component.onCompleted: {
+                        text = DB.getProp('expressionRight')
+                        func2 = text
+                        if (text === "" ) {
+                            text = "2 * sin(3 * t)"
+                            DB.setProp('expressionRight',text)
+                        }
+                    }
                 }
                 // Grid row 2
                 Slider {
@@ -294,15 +318,15 @@ Page {
                     onReleased: {
                         lower = lowerBound.sliderValue
                         plot.updatePlot()
-                        //Database.setProp('saveFps',String(sliderValue))
-                        //saveFps = sFps.sliderValue
+                        DB.setProp('lowerBound',String(sliderValue))
                     }
                     Component.onCompleted: {
-                        lower = lowerBound.sliderValue
-                        //value = Database.getProp('saveFps')
-                        //if (value < 1 )
-                        //    value = 5
-                        //saveFps = value
+                        value = DB.getProp('lowerBound')
+                        console.log(value)
+
+                        if (value < 1 ) value = 5
+
+                        lower = value
                     }
                 }
                 Slider {
@@ -317,15 +341,13 @@ Page {
                     onReleased: {
                         upper = upperBound.sliderValue
                         plot.updatePlot()
-                        //Database.setProp('saveFps',String(sliderValue))
-                        //saveFps = sFps.sliderValue
+                        DB.setProp('upperBound',String(sliderValue))
                     }
                     Component.onCompleted: {
-                        upper = upperBound.sliderValue
-                        //value = Database.getProp('saveFps')
-                        //if (value < 1 )
-                        //    value = 5
-                        //saveFps = value
+                        value = DB.getProp('upperBound')
+                        console.log(value)
+                        if (value < 1 ) value = 5
+                        upper = value
                     }
                 }
                 // Grid row 3
@@ -338,27 +360,34 @@ Page {
                         MenuItem { text: qsTr("Parametric") }
                         MenuItem { text: qsTr("Polar") }
                         onActivated: {
+                            console.log(mode)
                             mode = index
+                            DB.setProp('mode',String(mode))
+                        }
+                        Component.onCompleted: {
+                            mode = DB.getProp('mode')
+                            console.log(mode)
+                            if ( mode < 0 )
+                                mode = 0
+                            modeComboBox.currentIndex = mode
                         }
                     }
                     onCurrentIndexChanged:  {
 
                         console.log(currentIndex)
                         if (currentIndex === 0) {
-                            //expressionRight.visible = false
                             pageHeader.title = "Cartesian"
                         }
                         if (currentIndex === 1) {
-                            //expressionRight.visible = true
                             pageHeader.title = "Parametric"
                         }
                         if (currentIndex === 2) {
-                            //expressionRight.visible = false
                             pageHeader.title = "Polar"
                         }
 
                         // directly doing a plot leads to hanging menu items
                         updateTimer.start()
+                        //DB.setProp('mode',String(currentIndex))
                     }
                 }
                 Item {
@@ -393,15 +422,9 @@ Page {
 
     IconButton{
         id: upB
-
-        //height: isPortrait ? 1/3 * parent.height : 1/2 * parent.height
         x: isPortrait  ? 1/2 * parent.width - 1/2 * width : parent.width - width
         y: isPortrait ? parent.height - height : parent.height / 2
         rotation: isPortrait ? 0 : -90
-        //anchors {
-        //    horizontalCenter: page.horizontalCenter;
-        //    bottom: page.bottom
-        //}
         visible: ! drawer.open
         icon.source: "image://theme/icon-m-up"
         onClicked: drawer.open = true

@@ -4,11 +4,11 @@
 <context>
     <name>AboutPage</name>
     <message>
-        <source>About Solver</source>
+        <source>for Sailfish OS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>for Sailfish OS</source>
+        <source>About Plotter</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23,18 +23,6 @@
     <name>PlotterPage</name>
     <message>
         <source>Plotter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exp. Left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exp. Right</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -61,13 +49,21 @@
         <source>Plot</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F1()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F2() parametric</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SettingsPage</name>
-    <message>
-        <source>Solver Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Screen orientation</source>
         <translation type="unfinished"></translation>
@@ -214,6 +210,10 @@
     </message>
     <message>
         <source>Simplification method for non-numerical derivative result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
