@@ -4,7 +4,7 @@
 # generate changelog from well formatted Git commit messages and tag
 # annotations. Note that 'sfdk changelog' must be invoked as 'sfdk-changelog' here.
 
-sfdk-changelog
+#sfdk-changelog
 
 # Here are some basic examples how to change from the default behavior. Run
 # 'sfdk --help-maintaining' to learn more.
