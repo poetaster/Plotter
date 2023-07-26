@@ -23,7 +23,7 @@ DISTFILES += qml/harbour-plotter.qml \
     qml/pages/components/*.qml \
     qml/js/*.js \
     rpm/harbour-plotter.changes.in \
-    rpm/harbour-plotter.changes.run.in \
+    rpm/harbour-plotter.changes.run \
     rpm/harbour-plotter.spec \
     translations/*.ts \
     harbour-plotter.desktop
