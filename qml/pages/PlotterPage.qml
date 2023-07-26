@@ -265,7 +265,7 @@ Page {
                     inputMethodHints: Qt.ImhNoAutoUppercase
                     label: qsTr("F1()")
                     placeholderText: "6/(5-sqrt(x))"
-                    text:  "sin(2*t) + 3*sin(t)"
+                    text: func1 //  "sin(2*t) + 3*sin(t)"
                     EnterKey.enabled: text.length > 0
                     EnterKey.iconSource: "image://theme/icon-m-enter-next"
                     EnterKey.onClicked:  {
@@ -288,7 +288,7 @@ Page {
                     inputMethodHints: Qt.ImhNoAutoUppercase
                     label: qsTr("F2() parametric")
                     placeholderText: "sqrt(x)"
-                    text: "2*sin(3*t)"
+                    text: func2 // "2*sin(3*t)"
                     EnterKey.enabled: text.length > 0
                     EnterKey.iconSource: "image://theme/icon-m-enter-next"
                     EnterKey.onClicked: {
