@@ -48,7 +48,7 @@ Canvas {
 
     onPainted: {
          // we save the current plot to use as cover img.
-         console.log("painted")
+         //console.log("painted")
         snaptimer.start()
     }
 

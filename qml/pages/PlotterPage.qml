@@ -9,6 +9,7 @@ import Sailfish.Silica 1.0
 import "../components"
 import "../js/d3.js" as D3
 import "../js/plot.js" as Plot
+import "../js/localdb.js" as DB
 
 Page {
     id: page
@@ -18,6 +19,8 @@ Page {
 
     property var elem
     property var border
+
+    // this is a hack
     property var rootLine: 0
     property string func1
     property string func2
@@ -26,30 +29,36 @@ Page {
     property int upper
     property int lower
     property int mode: 0
+
+
     property bool appActive: Qt.application.active
 
     onOrientationChanged:  {
         if ( orientation === Orientation.Portrait ) {
             drawer.open = true
+            drawer.dock = Dock.Bottom
+
+            //drawer.height = 1/3 * _screenHeight //page.height //+ Theme.paddingLarge  // * _screenHeight //- Theme.paddingLarge
             if (debug) console.debug("port")
             tAreaH = _screenHeight * 3/5 //derivative_Column.childrenRect.height * .6
         } else {
             if (debug) console.debug("land")
+            drawer.dock = Dock.Right
             tAreaH = _screenHeight * 2/5
-            drawer.height = 1/4 * page.height //+ Theme.paddingLarge  // * _screenHeight //- Theme.paddingLarge
+            //drawer.height = 1/4 * _screenHeight //page.height //+ Theme.paddingLarge  // * _screenHeight //- Theme.paddingLarge
             drawer.open = false
         }
         if (debug) console.debug(Orientation.Portrait)
     }
 
     Component.onCompleted: {
-         //plot.save( StandardPaths.documents + "/" + func1 + func2 + ".png")
+        //plot.save( StandardPaths.documents + "/" + func1 + func2 + ".png")
     }
 
     onAppActiveChanged:{
         if (appActive === false ) {
-           //plot.save( StandardPaths.cache + "/graph.png")
-           // canvas.requestPaint()
+            //plot.save( StandardPaths.cache + "/graph.png")
+            // canvas.requestPaint()
         }
     }
     property alias notification: popup
@@ -61,8 +70,20 @@ Page {
         defaultColor: Theme.highlightColor
         labelMargin: Theme.paddingSmall
     }
+
     PageHeader {
+        id: pageHeader
         title: qsTr("Plotter")
+    }
+    Timer {
+        id:updateTimer
+        interval: 300
+        repeat: false
+        running: false
+        onTriggered: {
+            plot.updatePlot()
+        }
+
     }
     SilicaFlickable {
         id: container
@@ -79,23 +100,23 @@ Page {
         }
         PullDownMenu {
             MenuItem {
-                text: qsTr("Settings")
-                //onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
+                text: qsTr("About")
+                onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
             }
             /*
             MenuItem {
-                text: "Limit"
-                onClicked: pageStack.replace(Qt.resolvedUrl("Limit.qml"))
+                text: qsTr("Settings")
+                onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
             }
-            */
+*/
         }
 
         //FontLoader { id: dejavusansmono; source: "file:DejaVuSansMono.ttf" }
 
         Column {
             id : plotterColum
-            width: parent.width
-            height: parent.height * 1/2 - Theme.paddingLarge // childrenRect.height
+            width: isPortrait ? parent.width : 1/2 * parent.width
+            height: isPortrait ? 1/2 * parent.height : parent.height - Theme.paddingLarge
             spacing: Theme.paddingSmall
             topPadding: Theme.paddingLarge
 
@@ -223,176 +244,147 @@ Page {
         }
 
         // this is needed to keep menu updates from chocking on canvas redraw
-        Timer {
-            id:updateTimer
-            interval: 300
-            repeat: false
-            running: false
-            onTriggered: {
-                plot.updatePlot()
-            }
-
-        }
         DockedPanel{
             id: drawer
-            width: parent.width
-            height: 1/3 * parent.height
-            dock: Dock.bottom
-            Column {
+            height: isPortrait ? 1/3 * parent.height : parent.height
+            width: isPortrait ? parent.width : 1/2 * parent.width
+            dock: isPortrait ? Dock.bottom : Dock.Right
+
+            Grid {
                 id : input_Column
-                width: page.width
-                spacing: Theme.paddingSmall
-                //anchors.bottom: parent.bottom
-                Row{
-                    //anchors.leftMargin: Theme.paddingLarge
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        //top: parent.top
+                width: parent.width
+                height: isPortrait ? parent.height : parent.height / 2
+                leftPadding: Theme.paddingMedium
+                columns: isPortrait ? 2 : 2
+                rows: isPortrait ? 4 : 4
+                // anchors.bottom: parent.bottom
+                // Grid row 1
+                TextField {
+                    id: expressionLeft
+                    width: parent.width / 2 - Theme.paddingLarge
+                    inputMethodHints: Qt.ImhNoAutoUppercase
+                    label: qsTr("Exp. Left")
+                    placeholderText: "6/(5-sqrt(x))"
+                    text: "sin(2*t) + 3*sin(t)"
+                    EnterKey.enabled: text.length > 0
+                    EnterKey.iconSource: "image://theme/icon-m-enter-next"
+                    EnterKey.onClicked: expressionRight.focus = true
+                }
+                TextField {
+                    id: expressionRight
+                    width: parent.width  / 2 - Theme.paddingLarge
+                    inputMethodHints: Qt.ImhNoAutoUppercase
+                    label: qsTr("Exp. Right")
+                    placeholderText: "sqrt(x)"
+                    text: "2*sin(3*t)"
+                    EnterKey.enabled: text.length > 0
+                    EnterKey.iconSource: "image://theme/icon-m-enter-next"
+                    EnterKey.onClicked: modeComboBox.focus = true
+                }
+                // Grid row 2
+                Slider {
+                    id: lowerBound
+                    label: "Lower"
+                    width: parent.width / 2
+                    minimumValue: 1
+                    maximumValue: 10
+                    value: 5
+                    stepSize: 1
+                    valueText: sliderValue
+                    onReleased: {
+                        lower = lowerBound.sliderValue
+                        plot.updatePlot()
+                        //Database.setProp('saveFps',String(sliderValue))
+                        //saveFps = sFps.sliderValue
                     }
-                    spacing: Theme.paddingLarge
-                    TextField {
-                        id: expressionLeft
-                        width: parent.width / 2 - Theme.paddingLarge
-                        inputMethodHints: Qt.ImhNoAutoUppercase
-                        label: qsTr("Exp. Left")
-                        placeholderText: "6/(5-sqrt(x))"
-                        text: "sin(2*t) + 3*sin(t)"
-                        EnterKey.enabled: text.length > 0
-                        EnterKey.iconSource: "image://theme/icon-m-enter-next"
-                        EnterKey.onClicked: expressionRight.focus = true
-                    }
-                    TextField {
-                        id: expressionRight
-                        width: parent.width  / 2 - Theme.paddingLarge
-                        inputMethodHints: Qt.ImhNoAutoUppercase
-                        label: qsTr("Exp. Right")
-                        placeholderText: "sqrt(x)"
-                        text: "2*sin(3*t)"
-                        EnterKey.enabled: text.length > 0
-                        EnterKey.iconSource: "image://theme/icon-m-enter-next"
-                        EnterKey.onClicked: modeComboBox.focus = true
+                    Component.onCompleted: {
+                        lower = lowerBound.sliderValue
+                        //value = Database.getProp('saveFps')
+                        //if (value < 1 )
+                        //    value = 5
+                        //saveFps = value
                     }
                 }
-                Row {
-                    id: xRow
-                    //spacing: Theme.paddingSmall
-                    width: parent.width
-                    anchors {
-                        left: parent.left
-                        right: parent.right
+                Slider {
+                    id: upperBound
+                    label: "Upper"
+                    width: parent.width / 2
+                    minimumValue: 1
+                    maximumValue: 10
+                    value: 5
+                    stepSize: 1
+                    valueText: sliderValue
+                    onReleased: {
+                        upper = upperBound.sliderValue
+                        plot.updatePlot()
+                        //Database.setProp('saveFps',String(sliderValue))
+                        //saveFps = sFps.sliderValue
                     }
-                    Slider {
-                        id: lowerBound
-                        label: "Lower"
-                        width: parent.width / 2
-                        minimumValue: 1
-                        maximumValue: 10
-                        value: 5
-                        stepSize: 1
-                        valueText: sliderValue
-                        onReleased: {
-                            lower = lowerBound.sliderValue
-                            plot.updatePlot()
-                            //Database.setProp('saveFps',String(sliderValue))
-                            //saveFps = sFps.sliderValue
-                        }
-                        Component.onCompleted: {
-                            lower = lowerBound.sliderValue
-                            //value = Database.getProp('saveFps')
-                            //if (value < 1 )
-                            //    value = 5
-                            //saveFps = value
-                        }
-                    }
-                    Slider {
-                        id: upperBound
-                        label: "Upper"
-                        width: parent.width / 2
-                        minimumValue: 1
-                        maximumValue: 10
-                        value: 5
-                        stepSize: 1
-                        valueText: sliderValue
-                        onReleased: {
-                            upper = upperBound.sliderValue
-                            plot.updatePlot()
-                            //Database.setProp('saveFps',String(sliderValue))
-                            //saveFps = sFps.sliderValue
-                        }
-                        Component.onCompleted: {
-                            upper = upperBound.sliderValue
-                            //value = Database.getProp('saveFps')
-                            //if (value < 1 )
-                            //    value = 5
-                            //saveFps = value
-                        }
+                    Component.onCompleted: {
+                        upper = upperBound.sliderValue
+                        //value = Database.getProp('saveFps')
+                        //if (value < 1 )
+                        //    value = 5
+                        //saveFps = value
                     }
                 }
-                Row {
-                    id: modeRow
-                    spacing: Theme.paddingLarge
+                // Grid row 3
+                ComboBox {
+                    id: modeComboBox
+                    width: parent.width / 2 - Theme.paddingLarge
+                    currentIndex: mode
+                    menu: ContextMenu {
+                        MenuItem { text: qsTr("Cartesian") }
+                        MenuItem { text: qsTr("Parametric") }
+                        MenuItem { text: qsTr("Polar") }
+                        onActivated: {
+                            mode = index
+                        }
+                    }
+                    onCurrentIndexChanged:  {
+
+                        console.log(currentIndex)
+                        if (currentIndex === 0) {
+                            //expressionRight.visible = false
+                            pageHeader.title = "Cartesian"
+                        }
+                        if (currentIndex === 1) {
+                            //expressionRight.visible = true
+                            pageHeader.title = "Parametric"
+                        }
+                        if (currentIndex === 2) {
+                            //expressionRight.visible = false
+                            pageHeader.title = "Polar"
+                        }
+
+                        // directly doing a plot leads to hanging menu items
+                        updateTimer.start()
+                    }
+                }
+                Item {
+                   id: r3Item
+                   width: parent.width / 2 - Theme.paddingLarge
+                   height: modeComboBox.height
+                }
+                // Grid row 4
+                Button {
+                    id: copy_Button
+                    width: parent.width / 2 - Theme.paddingLarge
+                    text: qsTr("Export")
+
+                    onClicked: {
+                        //Clipboard.text = result_TextArea.text
+                        plot.save( StandardPaths.documents + "/" + func1 + func2 + ".png")
+                        notificationObj.notify(qsTr("Exported to: ") + StandardPaths.documents + "/" + func1 + func2 + ".png" )
+                    }
+                }
+                Button {
+                    id: calculate_Button
+                    width: parent.width / 2 - Theme.paddingLarge
                     anchors.leftMargin: Theme.paddingLarge
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    ComboBox {
-                        id: modeComboBox
-                        width: parent.width
-                        currentIndex: mode
-                        menu: ContextMenu {
-                            MenuItem { text: qsTr("Cartesian") }
-                            MenuItem { text: qsTr("Parametric") }
-                            MenuItem { text: qsTr("Polar") }
-                            onActivated: {
-                                mode = index
-                            }
-                        }
-                        onCurrentIndexChanged:  {
-
-                            console.log(currentIndex)
-                            if (currentIndex === 0)
-                                expressionRight.visible = false
-                            if (currentIndex === 1)
-                                expressionRight.visible = true
-                            if (currentIndex === 2)
-                                expressionRight.visible = false
-
-                            // directly doing a plot leads to hanging menu items
-                            updateTimer.start()
-                        }
-                    }
-
-                }
-
-                Row {
-                    id: buttonRow
-                    spacing: Theme.paddingLarge
-                    anchors.leftMargin: Theme.paddingLarge
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    Button {
-                        id: copy_Button
-                        width: parent.width * 1/3 - Theme.paddingLarge
-                        text: qsTr("Export")
-
-                        onClicked: {
-                            //Clipboard.text = result_TextArea.text
-                            plot.save( StandardPaths.documents + "/" + func1 + func2 + ".png")
-                            notificationObj.notify(qsTr("Exported to: ") + StandardPaths.documents + "/" + func1 + func2 + ".png" )
-                        }
-                    }
-                    Button {
-                        id: calculate_Button
-                        width: parent.width * 2/3 - Theme.paddingLarge
-                        text: qsTr("Plot")
-                        focus: true
-                        onClicked: { plot.updatePlot() }
-                    }
-
+                    text: qsTr("Plot")
+                    focus: true
+                    onClicked: { plot.updatePlot() }
                 }
             }
         }
@@ -401,10 +393,15 @@ Page {
 
     IconButton{
         id: upB
-        anchors {
-            horizontalCenter: page.horizontalCenter;
-            bottom: page.bottom
-        }
+
+        //height: isPortrait ? 1/3 * parent.height : 1/2 * parent.height
+        x: isPortrait  ? 1/2 * parent.width - 1/2 * width : parent.width - width
+        y: isPortrait ? parent.height - height : parent.height / 2
+        rotation: isPortrait ? 0 : -90
+        //anchors {
+        //    horizontalCenter: page.horizontalCenter;
+        //    bottom: page.bottom
+        //}
         visible: ! drawer.open
         icon.source: "image://theme/icon-m-up"
         onClicked: drawer.open = true

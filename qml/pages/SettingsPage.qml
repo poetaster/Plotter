@@ -33,7 +33,7 @@ Page {
             spacing: Theme.paddingSmall
 
             PageHeader {
-                title: qsTr('Solver Settings')
+                title: qsTr('Settings')
             }
             ComboBox {
                 id: orientation_ComboBox
