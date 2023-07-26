@@ -16,8 +16,12 @@ CONFIG += sailfishapp_qml
 
 DISTFILES += qml/harbour-plotter.qml \
     qml/cover/CoverPage.qml \
-    qml/pages/FirstPage.qml \
-    qml/pages/SecondPage.qml \
+    qml/pages/Plot.qml \
+    qml/pages/PlotterPage.qml \
+    qml/pages/SettingsPage.qml \
+    qml/pages/AboutPage.qml \
+    qml/pages/components/*.qml \
+    qml/js/*.js \
     rpm/harbour-plotter.changes.in \
     rpm/harbour-plotter.changes.run.in \
     rpm/harbour-plotter.spec \

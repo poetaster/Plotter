@@ -8,7 +8,7 @@ var debug = false;
 function db(){
     if (!_db){
         _db = LocalStorage.LocalStorage.openDatabaseSync(
-                    "harbour-stopmotion", "0.4", "Settings", 100000,
+                    "Plotter", "0.4", "Settings", 100000,
                      function(db) { db.changeVersion("", "0.4"); }
                      );
         initDb();

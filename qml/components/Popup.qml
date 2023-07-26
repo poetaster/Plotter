@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.6
 import Sailfish.Silica 1.0
 
 MouseArea {
@@ -6,7 +6,7 @@ MouseArea {
     anchors.top: parent.top
 
     property int padding: Theme.paddingLarge
-    property int labelMargin: Theme.paddingLarge
+    property int labelMargin: 2 * Theme.paddingLarge
 
     width: parent.width
     height: message.paintedHeight + padding

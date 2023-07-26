@@ -2,36 +2,219 @@
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
+    <name>AboutPage</name>
+    <message>
+        <source>About Solver</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>for Sailfish OS</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CoverPage</name>
     <message>
-        <source>My Cover</source>
-        <translation>Mein Cover</translation>
+        <source>Plotter</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>FirstPage</name>
+    <name>PlotterPage</name>
     <message>
-        <source>Show Page 2</source>
-        <translation>Zur Seite 2</translation>
+        <source>Plotter</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>UI Template</source>
-        <translation>UI-Vorlage</translation>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Hello Sailors</source>
-        <translation>Hallo Matrosen</translation>
+        <source>Exp. Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exp. Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cartesian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parametric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exported to: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>SecondPage</name>
+    <name>SettingsPage</name>
     <message>
-        <source>Nested Page</source>
-        <translation>Unterseite</translation>
+        <source>Solver Settings</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Item</source>
-        <translation>Element</translation>
+        <source>Screen orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Portrait</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Landscape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show not calculated derivative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>before derivative result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show not calculated limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>before Limit result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show not calculated integral</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>before integral result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show calculation time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numerical approximation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>of the derivative result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numerical integration method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numerical approximation of definite integral</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Optimized for infinities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Optimized for smooth integrands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of digits for numerical approx.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplification method for result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand terms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify terms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output type for derivative result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simple</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bidimensional</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LaTex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fortran</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Javascript</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python/SymPy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show not calculated derivative before derivative result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show calculation time before derivative result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numerical approximation of the derivative result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of digits for numerical approximation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplification method for non-numerical derivative result</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -3,18 +3,18 @@ Type=Application
 X-Nemo-Application-Type=silica-qt5
 Icon=harbour-plotter
 Exec=sailfish-qml harbour-plotter
-Name=harbour-plotter
+Name=Plotter
 # translation example:
 # your app name in German locale (de)
 #
 # Remember to comment out the following line, if you do not want to use
 # a different app name in German locale (de).
-Name[de]=harbour-plotter
+Name[de]=Plotter
 
 [X-Sailjail]
 # Replace with your organization as a reverse domain name
-OrganizationName=org.myorg
+OrganizationName=de.poetaster
 # ApplicationName does not have to be identical to Name
-ApplicationName=plotter
+ApplicationName=Plotter
 # Add the required permissions here
-Permissions=
+Permissions=UserDirs

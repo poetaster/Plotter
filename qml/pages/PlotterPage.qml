@@ -1,10 +1,10 @@
 /*
-  Copyright (C) 2023 Mark Washeim <blueprint@poetaster.de>.
+*  Copyright (C) 2023 Mark Washeim <blueprint@poetaster.de>.
 */
 
 import QtQuick 2.6
 import Sailfish.Silica 1.0
-import io.thp.pyotherside 1.5
+//import io.thp.pyotherside 1.5
 
 import "../components"
 import "../js/d3.js" as D3
@@ -15,17 +15,18 @@ Page {
     allowedOrientations: defaultAllowedOrientations
 
     property bool debug: false
-    property string showEquator: 'true'
 
     property var elem
     property var border
     property var rootLine: 0
-    property var func1
-    property var func2
+    property string func1
+    property string func2
     property var tAreaH
-    property var cName
-    property var upper
-    property var lower
+    property string cName
+    property int upper
+    property int lower
+    property int mode: 0
+    property bool appActive: Qt.application.active
 
     onOrientationChanged:  {
         if ( orientation === Orientation.Portrait ) {
@@ -35,12 +36,21 @@ Page {
         } else {
             if (debug) console.debug("land")
             tAreaH = _screenHeight * 2/5
-            drawer.height = 1/3 * page.height //+ Theme.paddingLarge  // * _screenHeight //- Theme.paddingLarge
+            drawer.height = 1/4 * page.height //+ Theme.paddingLarge  // * _screenHeight //- Theme.paddingLarge
             drawer.open = false
         }
         if (debug) console.debug(Orientation.Portrait)
-        //console.debug(numColumns)
-        //calculateResultSolver()
+    }
+
+    Component.onCompleted: {
+         //plot.save( StandardPaths.documents + "/" + func1 + func2 + ".png")
+    }
+
+    onAppActiveChanged:{
+        if (appActive === false ) {
+           //plot.save( StandardPaths.cache + "/graph.png")
+           // canvas.requestPaint()
+        }
     }
     property alias notification: popup
     Popup {
@@ -62,23 +72,22 @@ Page {
 
         Component.onCompleted: {
             cName = "Plotter"
+            console.log('silica init')
             if(debug) console.debug(childrenRect.height)
             if(debug) console.debug(solver_Column.childrenRect.height)
             if(debug) console.debug(input_Column.childrenRect.height)
         }
         PullDownMenu {
             MenuItem {
-                text: "Settings"
+                text: qsTr("Settings")
                 //onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
             }
-            MenuItem {
-                text: "Integral"
-                onClicked: pageStack.replace(Qt.resolvedUrl("Integral.qml"))
-            }
+            /*
             MenuItem {
                 text: "Limit"
                 onClicked: pageStack.replace(Qt.resolvedUrl("Limit.qml"))
             }
+            */
         }
 
         //FontLoader { id: dejavusansmono; source: "file:DejaVuSansMono.ttf" }
@@ -92,17 +101,13 @@ Page {
 
             Plot {
                 id: plot
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width //- (2 * Theme.paddingLarge)
-                height: parent.height ///2 - (2 * Theme.paddingLarge)
-
                 property var pts   // pts to plot, we need to init with to
                 // calculate the scaleing
                 property var chart // instance of Plot.chart object
 
                 // using Plot initialize otherwise border calcs will be off
                 Component.onCompleted: {
-
+                    console.log('plot init')
                     // instantiat plot.js
                     chart = new Plot.Chart(width, height, 10);
                     // set bounds
@@ -115,35 +120,51 @@ Page {
                     //plot.xScale = chart.x
                     //plot.yScale = chart.y
 
-                    //declare a function to plot
+                    /*
+                    * the sequence as an example
+                    * declare a function to plot
 
                     func1 = 'sin(2*t) + 3*sin(t)'
                     func2 = '2*sin(3*t)'
-                    // example of parametric
+
+                    simple cartesian
+                    function cart(t) { with (Math) { return eval(func1); } }
+
+                    two for parametric
                     function crc(t) { with (Math) { return eval(func1);  } }
                     function crc2(t) { with (Math) { return eval(func2);  } }
-                    pts = chart.parametric(crc, crc2, [-lower, upper, 100])
 
-                    // user border values, not scale from plot
+                    simple polar
+                    function polar(t) { with (Math) { return eval(func1); } }
+
+                    obtain pts
+                    pts = chart.cartesian(cart, [lower, upper, 100])
+
+                    // generate the xSale/yScale for canvas
                     border = getBorder(pts)
+
+                    */
+
+                    updatePlot()
 
                 }
 
                 function drawPlot(line) {
-                    // passed in from GrafixTrig
+
+                    // the matrix app was setting rootline via y
+                    // need to add a setting
                     //var y = 0;
+                    // border was something like
                     //border = [[-2 * Math.PI, -5], [2 * Math.PI, 5]];
-                    //console.log(border)
 
                     line(plot.pts)
 
-                    // for some reason, we get fugged offsets
-                    // no longer using border
-                    //console.log(border)
+                    // the original mechanism from matrix app
                     //line(getPoints());
+
                 }
 
-
+                /* here as an example only, see the plotType methods below */
                 function getPoints() {
                     var points = [];
                     var dx = (maxX - minX) / 100;
@@ -154,19 +175,28 @@ Page {
                 }
 
                 function updatePlot(){
+
                     upper = Math.abs(upperBound.sliderValue)
                     lower = - Math.abs(lowerBound.sliderValue)
-                    console.log(lower)
+
                     func1 = expressionLeft.text
                     func2 = expressionRight.text
-                    //pts = plotParametric(func1,func2)
-                    pts = plotPolar(func1)
-                    //pts = plotPolar(func1)
+
+                    if (mode === 0 ){
+                        pts = plotCartesian(func1)
+                    } else if (mode === 1 ){
+                        pts = plotParametric(func1,func2)
+                    } else if (mode === 2 ){
+                        pts = plotPolar(func1)
+                    }
+
                     border = getBorder(pts)
                     plot.requestPaint()
+
                 }
 
                 function plotParametric(func1,func2) {
+                    // functions to plot
                     function crc(t) { with (Math) { return eval(func1);  } }
                     function crc2(t) { with (Math) { return eval(func2);  } }
                     //function crc3(t) { return crc(t), crc2(t) ; }
@@ -177,15 +207,29 @@ Page {
                     // function to plot
                     function cart(t) { with (Math) { return eval(func); } }
                     return chart.cartesian(cart, [lower, upper, 100])
+
                     // you can add them, too
                     //function trigsig(x) { with (Math) { return sin(2*x) + 3*cos(x); } }
                     //var pts = chart.cartesian(trigsig, [-6.3, 6.3, 100])
+                    // line(pts)
                 }
 
                 function plotPolar(func) {
                     function cart(t) { with (Math) { return eval(func); } }
                     return chart.polar(cart, [lower, upper, 100])
                 }
+            }
+
+        }
+
+        // this is needed to keep menu updates from chocking on canvas redraw
+        Timer {
+            id:updateTimer
+            interval: 300
+            repeat: false
+            running: false
+            onTriggered: {
+                plot.updatePlot()
             }
 
         }
@@ -227,7 +271,7 @@ Page {
                         text: "2*sin(3*t)"
                         EnterKey.enabled: text.length > 0
                         EnterKey.iconSource: "image://theme/icon-m-enter-next"
-                        EnterKey.onClicked: variableX.focus = true
+                        EnterKey.onClicked: modeComboBox.focus = true
                     }
                 }
                 Row {
@@ -254,6 +298,7 @@ Page {
                             //saveFps = sFps.sliderValue
                         }
                         Component.onCompleted: {
+                            lower = lowerBound.sliderValue
                             //value = Database.getProp('saveFps')
                             //if (value < 1 )
                             //    value = 5
@@ -276,6 +321,7 @@ Page {
                             //saveFps = sFps.sliderValue
                         }
                         Component.onCompleted: {
+                            upper = upperBound.sliderValue
                             //value = Database.getProp('saveFps')
                             //if (value < 1 )
                             //    value = 5
@@ -283,6 +329,43 @@ Page {
                         }
                     }
                 }
+                Row {
+                    id: modeRow
+                    spacing: Theme.paddingLarge
+                    anchors.leftMargin: Theme.paddingLarge
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                    }
+                    ComboBox {
+                        id: modeComboBox
+                        width: parent.width
+                        currentIndex: mode
+                        menu: ContextMenu {
+                            MenuItem { text: qsTr("Cartesian") }
+                            MenuItem { text: qsTr("Parametric") }
+                            MenuItem { text: qsTr("Polar") }
+                            onActivated: {
+                                mode = index
+                            }
+                        }
+                        onCurrentIndexChanged:  {
+
+                            console.log(currentIndex)
+                            if (currentIndex === 0)
+                                expressionRight.visible = false
+                            if (currentIndex === 1)
+                                expressionRight.visible = true
+                            if (currentIndex === 2)
+                                expressionRight.visible = false
+
+                            // directly doing a plot leads to hanging menu items
+                            updateTimer.start()
+                        }
+                    }
+
+                }
+
                 Row {
                     id: buttonRow
                     spacing: Theme.paddingLarge
@@ -294,10 +377,12 @@ Page {
                     Button {
                         id: copy_Button
                         width: parent.width * 1/3 - Theme.paddingLarge
-                        text: qsTr("Copy")
+                        text: qsTr("Export")
+
                         onClicked: {
-                            Clipboard.text = result_TextArea.text
-                            notificationObj.notify("Copied!")
+                            //Clipboard.text = result_TextArea.text
+                            plot.save( StandardPaths.documents + "/" + func1 + func2 + ".png")
+                            notificationObj.notify(qsTr("Exported to: ") + StandardPaths.documents + "/" + func1 + func2 + ".png" )
                         }
                     }
                     Button {
@@ -313,6 +398,7 @@ Page {
         }
     }
     VerticalScrollDecorator { flickable: container }
+
     IconButton{
         id: upB
         anchors {
@@ -324,4 +410,5 @@ Page {
         onClicked: drawer.open = true
 
     }
+
 }

@@ -1,7 +1,15 @@
+/*
+*  Copyright (C) 2023 Mark Washeim <blueprint@poetaster.de>.
+*  derived from https://openrepos.net/content/fruct/matrix-calculator
+*/
+
 import QtQuick 2.6
+import Sailfish.Silica 1.0
 
 Canvas {
     id:canvas
+    width: parent.width
+    height: parent.height
     property real minX: -width / 2
     property real maxX: width / 2
     property real minY: -height / 2
@@ -23,9 +31,27 @@ Canvas {
 
     onAppActiveChanged:{
         if (appActive === true ) {
+            console.log("activated")
             canvas.requestPaint()
         }
     }
+    Timer {
+        id:snaptimer
+        interval: 1000
+        repeat: false
+        running: false
+        onTriggered: {
+            canvas.save( StandardPaths.cache + "/graph.png")
+        }
+
+    }
+
+    onPainted: {
+         // we save the current plot to use as cover img.
+         console.log("painted")
+        snaptimer.start()
+    }
+
     onPaint: {
         var context = plot.getContext('2d');
         context.clearRect(0,0,canvas.width,canvas.height);
