@@ -7,7 +7,7 @@ Name:       harbour-plotter
 # << macros
 
 Summary:    Plotter
-Version:    0.1.0
+Version:    0.1.1
 Release:    1
 License:    GPLv3
 BuildArch:  noarch
@@ -59,7 +59,9 @@ Url:
 %qmake5_install
 
 
-desktop-file-install --delete-original         --dir %{buildroot}%{_datadir}/applications                %{buildroot}%{_datadir}/applications/*.desktop
+desktop-file-install --delete-original \
+        --dir %{buildroot}%{_datadir}/applications \
+        %{buildroot}%{_datadir}/applications/*.desktop
 
 %files
 %defattr(-,root,root,-)
