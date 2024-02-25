@@ -35,7 +35,7 @@ Categories:
  - Utility
 DeveloperName: Mark Washeim (poetaster)
 Custom:
- - Repo: https://github.com/github.com/poetaster/Plotter
+ - Repo: https://github.com/poetaster/Plotter
 Icon: https://raw.github.com/poetaster/Plotter/main/icons/172x172/harbour-plotter.png
 Screenshots:
  - https://raw.githubusercontent.com/poetaster/Plotter/main/Screenshot-001.png
@@ -50,7 +50,7 @@ Url:
 
 %build
 
-%qmake5 
+%qmake5
 
 %make_build
 
