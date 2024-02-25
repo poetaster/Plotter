@@ -7,7 +7,7 @@ Name:       harbour-plotter
 # << macros
 
 Summary:    Plotter
-Version:    0.1.1
+Version:    0.1.2
 Release:    1
 License:    GPLv3
 BuildArch:  noarch
